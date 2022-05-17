@@ -1,4 +1,4 @@
 package logger
 
 const folderName = "logs"
-const rootLogFile = "test.log"
+const rootLogFile = "bmstu-courswork.log"
