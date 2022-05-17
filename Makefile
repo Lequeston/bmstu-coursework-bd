@@ -9,7 +9,6 @@ GOBIN=$(ROOT_DIR)$(BUILD_PATH)
 
 pre:
 	@mkdir ${ROOT_DIR}${BUILD_PATH}
-	@mkdir ${ROOT_DIR}${LOGS_PATH}
 
 build: clean pre
 	@GOBIN=$(GOBIN) GOARCH=amd64 GOOS=darwin go build -o $(GOBIN)/${BINARY_NAME}-darwin ${ROOT_DIR}/main.go
