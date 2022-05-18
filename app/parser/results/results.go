@@ -35,7 +35,7 @@ type Result struct {
 	Questions   []Question
 }
 
-func ParseResults(fileName string) ([]Result, error) {
+func GetRecords(fileName string) ([][]string, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.WithField("filename", fileName).Errorf("Failed to open result file: %s", err)
@@ -52,8 +52,10 @@ func ParseResults(fileName string) ([]Result, error) {
 	}
 
 	// В первой записи содержится только информация о полях, поэтому она нам не нужна
-	records = records[1:]
+	return records[1:], nil
+}
 
+func ParseRecords(records [][]string) []Result {
 	results := make([]Result, 0, len(records))
 
 	infoFieldAmount := reflect.TypeOf(Information{}).NumField()
@@ -88,5 +90,5 @@ func ParseResults(fileName string) ([]Result, error) {
 		results = append(results, result)
 	}
 
-	return results, nil
+	return results
 }
