@@ -33,10 +33,10 @@ type Result struct {
 	Questions   []Question
 }
 
-func ParseResults(fileName string) []Result {
+func ParseResults(fileName string) ([]Result, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer file.Close()
 
@@ -44,13 +44,13 @@ func ParseResults(fileName string) []Result {
 
 	records, err := reader.ReadAll()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// В первой записи содержится только информация о полях, поэтому она нам не нужна
 	records = records[1:]
 
-	results := make([]Result, 0)
+	results := make([]Result, 0, len(records))
 
 	infoFieldAmount := reflect.TypeOf(Information{}).NumField()
 	questionFieldAmount := reflect.TypeOf(Question{}).NumField()
@@ -59,16 +59,18 @@ func ParseResults(fileName string) []Result {
 		info := record[:infoFieldAmount]
 		questions := record[infoFieldAmount:]
 
+		questionsAmount := len(questions) / questionFieldAmount
+
 		var result Result
 		var resultInformation Information
-		resultQuestions := make([]Question, 0)
+		resultQuestions := make([]Question, 0, questionsAmount)
 
 		resultInformationReflect := reflect.ValueOf(&resultInformation).Elem()
 		for i, infoField := range info {
 			resultInformationReflect.Field(i).SetString(infoField)
 		}
 
-		for i := 0; i < questionFieldAmount; i++ {
+		for i := 0; i < questionsAmount; i++ {
 			var question Question
 			questionReflect := reflect.ValueOf(&question).Elem()
 			for j := 0; j < questionFieldAmount; j++ {
@@ -82,5 +84,5 @@ func ParseResults(fileName string) []Result {
 		results = append(results, result)
 	}
 
-	return results
+	return results, nil
 }
