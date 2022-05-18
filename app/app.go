@@ -1,13 +1,12 @@
 package app
 
 import (
-	"fmt"
-
+	"github.com/Lequeston/bmstu-coursework-bd/config/db/postgres"
 	"github.com/Lequeston/bmstu-coursework-bd/config/env"
+	log "github.com/sirupsen/logrus"
 )
 
 func App(config *env.Config) {
-	fmt.Println(config.Database.Login)
-	fmt.Println(config.Database.Password)
-	fmt.Println(config.Database.DatabaseName)
+	log.Info("Application is run!")
+	postgres.CheckConnection(config.Database)
 }

@@ -18,9 +18,11 @@ func ConfigInit() {
 }
 
 type DatabaseConfig struct {
-	Login        string
+	User         string
 	Password     string
 	DatabaseName string
+	Port         int
+	Host         string
 }
 
 type Config struct {
@@ -30,7 +32,9 @@ type Config struct {
 func New() *Config {
 	return &Config{
 		Database: DatabaseConfig{
-			Login:        getEnv("DATABASE_USER", "postgres"),
+			Host:         getEnv("DATABASE_HOST", "localhost"),
+			Port:         getEnvAsInt("DATABASE_PORT", 5432),
+			User:         getEnv("DATABASE_USER", "postgres"),
 			Password:     getEnv("DATABASE_PASSWORD", "qwerty123"),
 			DatabaseName: getEnv("DATABASE_NAME", "test"),
 		},
