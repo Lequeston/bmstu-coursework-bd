@@ -1,6 +1,7 @@
 package env
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -8,11 +9,40 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	development string = "development"
+	production  string = "production"
+	test        string = "test"
+)
+
+func getEnvFile(modeENV string) string {
+	var fileName string
+	rootDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if modeENV == test {
+		fileName = ".env.test"
+	}
+	fileName = ".env"
+
+	res := fmt.Sprintf("%s/%s", rootDir, fileName)
+	log.Printf("Path to enviroment file: %s", res)
+
+	return res
+}
+
 /**
 * Функция для получение env значений из .env файла
  */
 func ConfigInit() {
-	if err := godotenv.Load(); err != nil {
+	modeENV := getEnv("MODE_ENV", development)
+	log.Printf("The application is running in the %s mode", modeENV)
+
+	fileName := getEnvFile(modeENV)
+
+	if err := godotenv.Load(fileName); err != nil {
 		log.Println("No .env file found")
 	}
 }
