@@ -6,6 +6,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const fileName = "postgres.go"
+
 type DatabaseConnect = *pgx.Conn
 
 func InitPostgres(envConfig env.DatabaseConfig) (*pgx.Conn, error) {
@@ -22,6 +24,8 @@ func InitPostgres(envConfig env.DatabaseConfig) (*pgx.Conn, error) {
 		"port":     config.Port,
 		"user":     envConfig.User,
 		"database": envConfig.DatabaseName,
+		"file":     fileName,
+		"function": "InitPostgres",
 	}
 
 	conn, err := pgx.Connect(*config)
@@ -35,7 +39,11 @@ func InitPostgres(envConfig env.DatabaseConfig) (*pgx.Conn, error) {
 
 func CheckConnection(envConfig env.DatabaseConfig) {
 	_, err := InitPostgres(envConfig)
+	logConfig := log.Fields{
+		"file":     fileName,
+		"function": "CheckConnection",
+	}
 	if err != nil {
-		log.Fatalf("Check connection to postgres failed %s", err)
+		log.WithFields(logConfig).Fatalf("Check connection to postgres failed %s", err)
 	}
 }
