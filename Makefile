@@ -1,6 +1,6 @@
 ROOT_DIR=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-BINARY_NAME=parser-square
+BINARY_NAME=bmstu-coursework-bd
 BUILD_PATH=bin
 LOGS_PATH=logs
 SPEC_PATH=spec
