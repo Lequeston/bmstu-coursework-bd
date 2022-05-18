@@ -7,17 +7,33 @@ import (
 )
 
 func InitPostgres(envConfig env.DatabaseConfig) (*pgx.Conn, error) {
-	var config = &pgx.ConnConfig{
-		Host:     envConfig.User,
+	config := &pgx.ConnConfig{
+		Host:     envConfig.Host,
 		Port:     uint16(envConfig.Port),
 		User:     envConfig.User,
 		Password: envConfig.Password,
 		Database: envConfig.DatabaseName,
 	}
-	conn, err := pgx.Connect(*config)
-	if err != nil {
-		log.Error("Failed to connect to the database", err)
+
+	logConfig := log.Fields{
+		"host":     config.Host,
+		"port":     config.Port,
+		"user":     envConfig.User,
+		"database": envConfig.DatabaseName,
 	}
 
+	conn, err := pgx.Connect(*config)
+	if err != nil {
+		log.WithFields(logConfig).Errorf("Failed to connect to the database %s", err)
+	}
+
+	log.WithFields(logConfig).Info("Connection to the database is successful")
 	return conn, err
+}
+
+func CheckConnection(envConfig env.DatabaseConfig) {
+	_, err := InitPostgres(envConfig)
+	if err != nil {
+		log.Fatalf("Check connection to postgres failed %s", err)
+	}
 }
