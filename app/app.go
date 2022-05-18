@@ -7,6 +7,6 @@ import (
 )
 
 func App(config *env.Config) {
-	log.Info("Application is run!")
+	log.Info("Application is running!")
 	postgres.CheckConnection(config.Database)
 }
