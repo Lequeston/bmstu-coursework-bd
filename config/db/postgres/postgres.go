@@ -6,6 +6,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type DatabaseConnect = *pgx.Conn
+
 func InitPostgres(envConfig env.DatabaseConfig) (*pgx.Conn, error) {
 	config := &pgx.ConnConfig{
 		Host:     envConfig.Host,
