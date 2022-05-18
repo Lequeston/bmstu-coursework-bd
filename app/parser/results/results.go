@@ -1,4 +1,4 @@
-package main
+package results
 
 import (
 	"encoding/csv"
@@ -33,7 +33,7 @@ type Result struct {
 	Questions   []Question
 }
 
-func parseResults(fileName string) []Result {
+func ParseResults(fileName string) []Result {
 	file, err := os.Open(fileName)
 	if err != nil {
 		panic(err)
