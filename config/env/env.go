@@ -1,18 +1,18 @@
 package env
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"path"
 	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 const (
-	development string = "development"
-	production  string = "production"
-	test        string = "test"
+	DEVELOPMENT_MODE string = "development"
+	PRODUCTION_MODE  string = "production"
+	TEST_MODE        string = "test"
 )
 
 func getEnvFile(modeENV string) string {
@@ -22,13 +22,14 @@ func getEnvFile(modeENV string) string {
 		log.Fatal(err)
 	}
 
-	if modeENV == test {
-		fileName = ".env.test"
-	}
 	fileName = ".env"
 
-	res := fmt.Sprintf("%s/%s", rootDir, fileName)
-	log.Printf("Path to enviroment file: %s", res)
+	if modeENV == TEST_MODE {
+		fileName = ".env.test"
+		rootDir = getEnv("ROOT_DIR", rootDir)
+	}
+
+	res := path.Join(rootDir, fileName)
 
 	return res
 }
@@ -37,8 +38,7 @@ func getEnvFile(modeENV string) string {
 * Функция для получение env значений из .env файла
  */
 func ConfigInit() {
-	modeENV := getEnv("MODE_ENV", development)
-	log.Printf("The application is running in the %s mode", modeENV)
+	modeENV := getEnv("MODE_ENV", DEVELOPMENT_MODE)
 
 	fileName := getEnvFile(modeENV)
 
@@ -55,8 +55,13 @@ type DatabaseConfig struct {
 	Host         string
 }
 
+type ApplicationConfig struct {
+	Mode    string
+	RootDir string
+}
 type Config struct {
-	Database DatabaseConfig
+	Database    DatabaseConfig
+	Application ApplicationConfig
 }
 
 func New() *Config {
@@ -67,6 +72,10 @@ func New() *Config {
 			User:         getEnv("DATABASE_USER", "postgres"),
 			Password:     getEnv("DATABASE_PASSWORD", "qwerty123"),
 			DatabaseName: getEnv("DATABASE_NAME", "test"),
+		},
+		Application: ApplicationConfig{
+			Mode:    getEnv("MODE_ENV", DEVELOPMENT_MODE),
+			RootDir: getEnv("ROOT_DIR", ""),
 		},
 	}
 }

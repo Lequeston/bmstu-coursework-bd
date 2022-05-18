@@ -1,10 +1,11 @@
 package logger
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"path"
 
+	"github.com/Lequeston/bmstu-coursework-bd/config/env"
 	"github.com/sirupsen/logrus"
 )
 
@@ -23,17 +24,18 @@ func createLogFile(filename string) {
 	defer file.Close()
 }
 
-func LoggerInit() {
-	rootDir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	pathToRootFile := fmt.Sprintf("%s/%s/%s", rootDir, folderName, rootLogFile)
-	log.Printf("Path to root log file: %s", pathToRootFile)
-	createLogFolder(folderName)
+func LoggerInit(conf env.ApplicationConfig) {
+	createLogFolder(path.Join(conf.RootDir, folderName))
+	pathToRootFile := path.Join(conf.RootDir, folderName, rootLogFile)
 	createLogFile(pathToRootFile)
+	pathToTestFile := path.Join(conf.RootDir, folderName, testLogFile)
+	createLogFile(pathToTestFile)
 
-	rootFile, err := os.OpenFile(pathToRootFile, os.O_WRONLY|os.O_CREATE, 0755)
+	fileWrite := pathToRootFile
+	if conf.Mode == env.TEST_MODE {
+		fileWrite = pathToTestFile
+	}
+	rootFile, err := os.OpenFile(fileWrite, os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
