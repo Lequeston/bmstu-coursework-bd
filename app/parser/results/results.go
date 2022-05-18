@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"os"
 	"reflect"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Question struct {
@@ -36,6 +38,7 @@ type Result struct {
 func ParseResults(fileName string) ([]Result, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
+		log.WithField("filename", fileName).Errorf("Failed to open result file: %s", err)
 		return nil, err
 	}
 	defer file.Close()
@@ -44,6 +47,7 @@ func ParseResults(fileName string) ([]Result, error) {
 
 	records, err := reader.ReadAll()
 	if err != nil {
+		log.Errorf("Failed to create result file reader: %s", err)
 		return nil, err
 	}
 
