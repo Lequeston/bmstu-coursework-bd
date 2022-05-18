@@ -7,6 +7,9 @@ LOGS_PATH=logs
 
 GOBIN=$(ROOT_DIR)$(BUILD_PATH)
 
+view_root_dir:
+	@echo $(ROOT_DIR)
+
 pre:
 	@mkdir ${ROOT_DIR}${BUILD_PATH}
 
@@ -30,7 +33,7 @@ clean:
 	@rm -rf ${ROOT_DIR}${LOGS_PATH}
 
 test:
-	@GOBIN=$(GOBIN) MODE_ENV=test go test ${ROOT_DIR}... -v
+	@GOBIN=$(GOBIN) MODE_ENV=test ROOT_DIR=${ROOT_DIR} go test ${ROOT_DIR}... -v
 
 test_coverage:
 	@GOBIN=$(GOBIN) go test ${ROOT_DIR}... -coverprofile=coverage.out

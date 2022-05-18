@@ -8,9 +8,9 @@ import (
 
 func init() {
 	env.ConfigInit()
-	logger.LoggerInit()
 }
 func main() {
 	config := env.New()
+	logger.LoggerInit(config.Application)
 	app.App(config)
 }
