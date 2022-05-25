@@ -7,6 +7,9 @@
 # Visual Studio Code config
 .vscode
 
+# JetBrains IDE config
+.idea
+
 # Test binary, built with `go test -c`
 *.test
 
